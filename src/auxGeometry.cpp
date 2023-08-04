@@ -1,17 +1,17 @@
-#include "mwTPoint3d.hpp"
-#include "mwMathConstants.hpp"
 #include "auxGeometry.hpp"
-#include "mwException.hpp"
+#include "math_constants.hpp"
+
+using namespace std;
 
 
-typedef cadcam::mwTPoint3d<double> point3d;
+typedef point3d<double> point3d_;
 
-double auxGeometry::DistBtwPointAndLine(const point3d& a, const point3d& b, const point3d& m)
+double auxGeometry::DistBtwPointAndLine(const point3d_& a, const point3d_& b, const point3d_& m)
 {
   return 	(~((m - a) % (b - a))) / (~(b - a));
 }
 
-double auxGeometry::DistBtwPointAndSegment(const point3d& a, const point3d& b, const point3d& m)
+double auxGeometry::DistBtwPointAndSegment(const point3d_& a, const point3d_& b, const point3d_& m)
 {
   double lenAB = ~(b - a);
   double projM = (m - a) * (b - a) / lenAB;
@@ -29,23 +29,23 @@ double auxGeometry::DistBtwPointAndSegment(const point3d& a, const point3d& b, c
   }
 }
 
-point3d auxGeometry::PointToLineProjection(const point3d& a, const point3d& b, const point3d& m)
+point3d_ auxGeometry::PointToLineProjection(const point3d_& a, const point3d_& b, const point3d_& m)
 {
-  if (cadcam::is_equal(~(a - b), 0.))
+  if (mathdef::is_eq(~(a - b), 0.))
   {
     return ~(a - m) > ~(b - m) ? b : a;
   }
-  point3d d(b - a);
+  point3d_ d(b - a);
   double t = (d * (m - a)) / (d * d);
 
-  return  point3d(
+  return  point3d_(
     a.x() + d.x() * t,
     a.y() + d.y() * t,
     a.z() + d.z() * t
   );
 }
 
-point3d auxGeometry::FindClosestPointOfSegmentToPoint(const point3d& a, const point3d& b, const point3d& m)
+point3d_ auxGeometry::FindClosestPointOfSegmentToPoint(const point3d_& a, const point3d_& b, const point3d_& m)
 {
   double lenAB = ~(b - a);
   double projM = (m - a) * (b - a) / lenAB;
@@ -68,7 +68,7 @@ QUADRATIC_EQUATION_SOLUTION_RESULT auxGeometry::SolveQuadEq(const double a, cons
   double& x1, double& x2)
 {
   double d = (b * b) - (4. * a * c);
-  if (cadcam::is_equal(d, 0.))
+  if (mathdef::is_eq(d, 0.))
   {
     x1 = -b / (2 * a);
     return QUADRATIC_EQUATION_SOLUTION_RESULT::ONE_REAL_ROOT;
@@ -85,10 +85,10 @@ QUADRATIC_EQUATION_SOLUTION_RESULT auxGeometry::SolveQuadEq(const double a, cons
   else return QUADRATIC_EQUATION_SOLUTION_RESULT::IMAGINARY_ROOTS;
 }
 
-INFINITE_VERTICAL_CYLINDER_AND_LINE auxGeometry::InfiniteVerticalCylinderAndLinePosition(const point3d& cyl, const double R,
-  const point3d& a, const point3d& b, std::pair<point3d, point3d>& result)
+INFINITE_VERTICAL_CYLINDER_AND_LINE auxGeometry::InfiniteVerticalCylinderAndLinePosition(const point3d_& cyl, const double R,
+  const point3d_& a, const point3d_& b, pair<point3d_, point3d_>& result)
 {
-  auto dir = point3d(b.x() - a.x(), b.y() - a.y(), b.z() - a.z());
+  auto dir = point3d_(b.x() - a.x(), b.y() - a.y(), b.z() - a.z());
 
   double a_ = dir.x() * dir.x() + dir.y() - dir.y();
   double b_ = 2 * (dir.x() * (a.x() - cyl.x()) + dir.y() * (a.y() - cyl.y()));
@@ -125,8 +125,8 @@ INFINITE_VERTICAL_CYLINDER_AND_LINE auxGeometry::InfiniteVerticalCylinderAndLine
   }
 }
 
-INFINITE_VERTICAL_CYLINDER_AND_SEGMENT auxGeometry::InfiniteVerticalCylinderAndSegmentPosition(const point3d& cyl, const double R,
-  const point3d& a, const point3d& b, std::pair<point3d, point3d>& result)
+INFINITE_VERTICAL_CYLINDER_AND_SEGMENT auxGeometry::InfiniteVerticalCylinderAndSegmentPosition(const point3d_& cyl, const double R,
+  const point3d_& a, const point3d_& b, pair<point3d_, point3d_>& result)
 {
   auto res = InfiniteVerticalCylinderAndLinePosition(cyl, R, a, b, result);
 
@@ -134,8 +134,8 @@ INFINITE_VERTICAL_CYLINDER_AND_SEGMENT auxGeometry::InfiniteVerticalCylinderAndS
     || res == INFINITE_VERTICAL_CYLINDER_AND_LINE::INTERSECT_IN_TWO_POINTS) {
     size_t count = 0;
 
-    count += cadcam::is_equal(DistBtwPointAndSegment(a, b, result.first), 0.);
-    count += cadcam::is_equal(DistBtwPointAndSegment(a, b, result.second), 0.);
+    count += mathdef::is_eq(DistBtwPointAndSegment(a, b, result.first), 0.);
+    count += mathdef::is_eq(DistBtwPointAndSegment(a, b, result.second), 0.);
 
     if (count == 2) {
       return INFINITE_VERTICAL_CYLINDER_AND_SEGMENT::INTERSECT_IN_TWO_POINTS;
@@ -160,11 +160,11 @@ INFINITE_VERTICAL_CYLINDER_AND_SEGMENT auxGeometry::InfiniteVerticalCylinderAndS
 
 
 
-std::pair<point3d, point3d> auxGeometry::CrossedLinesPerpendicular(
-  const point3d& a_vec, const point3d& Ma,
-  const point3d& b_vec, const point3d& Mb)
+pair<point3d_, point3d_> auxGeometry::CrossedLinesPerpendicular(
+  const point3d_& a_vec, const point3d_& Ma,
+  const point3d_& b_vec, const point3d_& Mb)
 {
-  point3d c_vec = a_vec % b_vec;
+  point3d_ c_vec = a_vec % b_vec;
 
   double constXTerm = Mb.x() - Ma.x();
   double constYTerm = Mb.y() - Ma.y();
@@ -175,8 +175,8 @@ std::pair<point3d, point3d> auxGeometry::CrossedLinesPerpendicular(
     {-b_vec.y(), a_vec.y(), c_vec.y()},
     {-b_vec.z(), a_vec.z(), c_vec.z()} });
 
-  if (cadcam::is_equal(det, 0.)) {
-    throw misc::mwException(21, "lines are parallel"); // std::domain_error
+  if (mathdef::is_eq(det, 0.)) {
+    throw domain_error("lines are parallel");
   }
 
   double det_b_s_param = Determinant<double>({
@@ -198,9 +198,9 @@ std::pair<point3d, point3d> auxGeometry::CrossedLinesPerpendicular(
   };
 }
 
-std::pair<point3d, point3d> auxGeometry::CrossedLinesPerpendicularQuick(const point3d& a_vec, const point3d& Ma, const point3d& b_vec, const point3d& Mb)
+pair<point3d_, point3d_> auxGeometry::CrossedLinesPerpendicularQuick(const point3d_& a_vec, const point3d_& Ma, const point3d_& b_vec, const point3d_& Mb)
 {
-  point3d c_vec = a_vec % b_vec;
+  point3d_ c_vec = a_vec % b_vec;
 
   double constXTerm = Mb.x() - Ma.x();
   double constYTerm = Mb.y() - Ma.y();
@@ -215,8 +215,8 @@ std::pair<point3d, point3d> auxGeometry::CrossedLinesPerpendicularQuick(const po
 
   double det = -b_vec.x() * minor_1 - a_vec.x() * minor_2 + c_vec.x() * minor_3;
 
-  if (cadcam::is_equal(det, 0.)) {
-    throw misc::mwException(21, "lines are parallel"); // std::domain_error
+  if (mathdef::is_eq(det, 0.)) {
+    throw domain_error("lines are parallel");
   }
 
   double det_b_s_param = constXTerm * minor_1 - a_vec.x() * minor_4 + c_vec.x() * minor_5;
@@ -232,47 +232,47 @@ std::pair<point3d, point3d> auxGeometry::CrossedLinesPerpendicularQuick(const po
   };
 }
 
-bool auxGeometry::RectanglesIntersection(const point3d& aP1, const point3d& aP2, const point3d& bP1, const point3d& bP2)
+bool auxGeometry::RectanglesIntersection(const point3d_& aP1, const point3d_& aP2, const point3d_& bP1, const point3d_& bP2)
 {
   return (aP2.x() >= bP1.x() && bP2.x() >= aP1.x() || aP1.x() >= bP2.x() && bP1.x() >= aP2.x())
     && (aP2.y() >= bP1.y() && bP1.y() >= aP1.y() || aP1.y() >= bP1.y() && bP1.y() >= aP2.y());
 }
 
-point3d auxGeometry::PlaneAndLineIntersectionPoint(const double A, const double B, const double C, const double D,
-  const point3d& s, const point3d& f)
+point3d_ auxGeometry::PlaneAndLineIntersectionPoint(const double A, const double B, const double C, const double D,
+  const point3d_& s, const point3d_& f)
 {
-  double denominator = point3d(A, B, C) * (s - f);
+  double denominator = point3d_(A, B, C) * (s - f);
 
-  if (cadcam::is_equal(point3d(A, B, C) * (s - f), 0.)) { // the line is parallel to the plane or lies in it
-    throw misc::mwException(21, "divizion by zero");
+  if (mathdef::is_eq(point3d_(A, B, C) * (s - f), 0.)) { // the line is parallel to the plane or lies in it
+    throw runtime_error("divizion by zero");
   }
 
-  double t = (point3d(A, B, C) * s + D) / denominator;
+  double t = (point3d_(A, B, C) * s + D) / denominator;
 
-  return point3d(
+  return point3d_(
     s.x() + (f.x() - s.x()) * t,
     s.y() + (f.y() - s.y()) * t,
     s.z() + (f.z() - s.z()) * t
   );
 }
 
-LINE_AND_PLANE auxGeometry::PlaneAndLinePosition(const point3d& a, const point3d& b, const point3d& c,
-  const point3d& s, const point3d& f, point3d& intersectionPoint)
+LINE_AND_PLANE auxGeometry::PlaneAndLinePosition(const point3d_& a, const point3d_& b, const point3d_& c,
+  const point3d_& s, const point3d_& f, point3d_& intersectionPoint)
 {
-  point3d d(f - s);
+  point3d_ d(f - s);
 
-  point3d n = (b - a) % (c - a);
+  point3d_ n = (b - a) % (c - a);
 
   double A = n.x();
   double B = n.y();
   double C = n.z();
   double D = -(a * n);
 
-  if (cadcam::is_equal(point3d(A, B, C) * (s - d) + D, 0.))
+  if (mathdef::is_eq(point3d_(A, B, C) * (s - d) + D, 0.))
   {
     return LINE_AND_PLANE::LINE_LIES_WITHIN;
   }
-  else if (cadcam::is_equal(d * n, 0.))
+  else if (mathdef::is_eq(d * n, 0.))
   {
     return LINE_AND_PLANE::PARALLEL;
   }
@@ -283,10 +283,10 @@ LINE_AND_PLANE auxGeometry::PlaneAndLinePosition(const point3d& a, const point3d
   }
 }
 
-SEGMENT_AND_PLANE auxGeometry::PlaneAndSegmentPosition(const point3d& a, const point3d& b, const point3d& c,
-  const point3d& s, const point3d& f, point3d& intersectionPoint)
+SEGMENT_AND_PLANE auxGeometry::PlaneAndSegmentPosition(const point3d_& a, const point3d_& b, const point3d_& c,
+  const point3d_& s, const point3d_& f, point3d_& intersectionPoint)
 {
-  point3d tmp;
+  point3d_ tmp;
   LINE_AND_PLANE res = auxGeometry::PlaneAndLinePosition(a, b, c, s, f, tmp);
   if (res == LINE_AND_PLANE::LINE_LIES_WITHIN)
   {
@@ -298,7 +298,7 @@ SEGMENT_AND_PLANE auxGeometry::PlaneAndSegmentPosition(const point3d& a, const p
   }
   else
   {
-    if (cadcam::is_equal((~(tmp - s)) + (~(f - tmp)) - (~(f - s)), 0.))
+    if (mathdef::is_eq((~(tmp - s)) + (~(f - tmp)) - (~(f - s)), 0.))
     {
       intersectionPoint = tmp;
       return SEGMENT_AND_PLANE::INTERSECT;

@@ -1,9 +1,8 @@
-#ifndef __auxGeometry_hpp__
-#define __auxGeometry_hpp__
+#pragma once
 
-#include "mwTPoint3d.hpp"
-
+#include "point3d.hpp"
 #include <stdexcept>
+#include <vector>
 
 enum class LINE_AND_PLANE
 {
@@ -47,43 +46,43 @@ enum class QUADRATIC_EQUATION_SOLUTION_RESULT
 
 class auxGeometry
 {
-  typedef cadcam::mwTPoint3d<double> point3d;
+  typedef point3d<double> point3d_;
 public:
   /*
   \param a - part of line
   \param b - part of line
   \param m - point
   */
-  static double DistBtwPointAndLine(const point3d& a, const point3d& b, const point3d& m);
+  static double DistBtwPointAndLine(const point3d_& a, const point3d_& b, const point3d_& m);
   /*
   \param a - first end of segment
   \param b - second end of segment
   \param m - point
   */
-  static double DistBtwPointAndSegment(const point3d& a, const point3d& b, const point3d& m);
+  static double DistBtwPointAndSegment(const point3d_& a, const point3d_& b, const point3d_& m);
 
-  static point3d PointToLineProjection(const point3d& a, const point3d& b, const point3d& m);
+  static point3d_ PointToLineProjection(const point3d_& a, const point3d_& b, const point3d_& m);
 
   static QUADRATIC_EQUATION_SOLUTION_RESULT SolveQuadEq(
     const double a, const double b, const double c,
     double& x1, double& x2);
 
-  static point3d FindClosestPointOfSegmentToPoint(const point3d& a, const point3d& b, const point3d& m);
+  static point3d_ FindClosestPointOfSegmentToPoint(const point3d_& a, const point3d_& b, const point3d_& m);
 
   static INFINITE_VERTICAL_CYLINDER_AND_LINE InfiniteVerticalCylinderAndLinePosition(
-    const point3d& cyl, const double R,
-    const point3d& a, const point3d& b, std::pair<point3d, point3d>& result);
+    const point3d_& cyl, const double R,
+    const point3d_& a, const point3d_& b, std::pair<point3d_, point3d_>& result);
 
   static INFINITE_VERTICAL_CYLINDER_AND_SEGMENT InfiniteVerticalCylinderAndSegmentPosition(
-    const point3d& cyl, const double R,
-    const point3d& a, const point3d& b, std::pair<point3d, point3d>& result);
+    const point3d_& cyl, const double R,
+    const point3d_& a, const point3d_& b, std::pair<point3d_, point3d_>& result);
 
   template<class T>
   static T Determinant(const std::vector<std::vector<T>>& Matrix)
   {
     size_t n = Matrix.size();
     if (n < 1 || Matrix[0].size() != n) {
-      throw misc::mwException(21, "wrong matrix dimensions"); // std::invalid_argument
+      throw std::invalid_argument("wrong matrix dimensions");
     }
     else if (n == 1)
     {
@@ -116,13 +115,13 @@ public:
     }
   }
 
-  static std::pair<point3d, point3d> CrossedLinesPerpendicular(
-    const point3d& a_vec, const point3d& Ma,
-    const point3d& b_vec, const point3d& Mb);
+  static std::pair<point3d_, point3d_> CrossedLinesPerpendicular(
+    const point3d_& a_vec, const point3d_& Ma,
+    const point3d_& b_vec, const point3d_& Mb);
 
-  static std::pair<point3d, point3d> CrossedLinesPerpendicularQuick(
-    const point3d& a_vec, const point3d& Ma,
-    const point3d& b_vec, const point3d& Mb);
+  static std::pair<point3d_, point3d_> CrossedLinesPerpendicularQuick(
+    const point3d_& a_vec, const point3d_& Ma,
+    const point3d_& b_vec, const point3d_& Mb);
 
 
 
@@ -134,32 +133,30 @@ public:
 
 
 
-  static bool RectanglesIntersection(const point3d& aP1, const point3d& aP2, const point3d& bP1, const point3d& bP2);
+  static bool RectanglesIntersection(const point3d_& aP1, const point3d_& aP2, const point3d_& bP1, const point3d_& bP2);
   /*
   \param coefficients A,B,C,D determines plane
   \param 3dpoints s,f determines line
   */
-  static point3d PlaneAndLineIntersectionPoint(
+  static point3d_ PlaneAndLineIntersectionPoint(
     const double A, const double B, const double C, const double D,
-    const point3d& s, const point3d& f);
+    const point3d_& s, const point3d_& f);
   /*
   \param points a,b,c determines plane
   \param 3dpoints s,f determines line
   \output intersectionPoint if it exist
   */
   static LINE_AND_PLANE PlaneAndLinePosition(
-    const point3d& a, const point3d& b, const point3d& c,
-    const point3d& s, const point3d& f, point3d& intersectionPoint);
+    const point3d_& a, const point3d_& b, const point3d_& c,
+    const point3d_& s, const point3d_& f, point3d_& intersectionPoint);
   /*
   \param points a,b,c determines plane
   \param 3dpoints s,f determines segment
   \output intersectionPoint if it exist
   */
   static SEGMENT_AND_PLANE PlaneAndSegmentPosition(
-    const point3d& a, const point3d& b, const point3d& c,
-    const point3d& s, const point3d& f, point3d& intersectionPoint);
+    const point3d_& a, const point3d_& b, const point3d_& c,
+    const point3d_& s, const point3d_& f, point3d_& intersectionPoint);
 protected:
 private:
 };
-
-#endif //__auxGeometry_hpp__
