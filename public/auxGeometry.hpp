@@ -109,7 +109,7 @@ public:
             cofactor_j++;
           }
         }
-        det += static_cast<T>(pow(-1, p)) * Matrix[0][p] * Determinant(move(CofactorMatrix));
+        det += static_cast<T>(std::pow(-1, p)) * Matrix[0][p] * Determinant(move(CofactorMatrix));
       }
       return det;
     }

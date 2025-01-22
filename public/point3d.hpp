@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <cmath>
 
 template <class T>
 class point3d
@@ -132,7 +133,7 @@ public:
 
 	double operator~() const
 	{
-		return sqrt((*this) * (*this));
+		return std::sqrt((*this) * (*this));
 	}
 
 	void operator*=(const double factor)

@@ -10,6 +10,19 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(misc)
 
+if (MSVC)
+    # warning level 4
+    add_compile_options(/W4 /WX)
+else()
+    # additional warnings
+    add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+endif()
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_SUPPRESS_REGENERATION OFF)
+
 file(GLOB SOURCE_FILES
     public/*.hpp
     src/*.cpp

@@ -52,7 +52,7 @@ namespace mathdef
     return std::abs(a - b) < MATH_TOL;
   }
 
-  inline const bool is_neq(const double& val1, const double& val2)
+  inline bool is_neq(const double& val1, const double& val2)
   {
     return !is_eq(val1, val2);
   }
@@ -67,37 +67,37 @@ namespace mathdef
     return std::abs(a - b) < tol;
   }
 
-  inline const bool is_lt(const double& toCompare, const double& source)
+  inline bool is_lt(const double& toCompare, const double& source)
   {
     return toCompare < (source - MATH_TOL);
   }
 
-  inline const bool is_gt(const double& toCompare, const double& source)
+  inline bool is_gt(const double& toCompare, const double& source)
   {
     return toCompare > (source + MATH_TOL);
   }
 
-  inline const bool is_lte(const double& toCompare, const double& source)
+  inline bool is_lte(const double& toCompare, const double& source)
   {
     return toCompare <= (source + MATH_TOL);
   }
 
-  inline const bool is_gte(const double& toCompare, const double& source)
+  inline bool is_gte(const double& toCompare, const double& source)
   {
     return toCompare >= (source - MATH_TOL);
   }
 
-  inline const bool is_lte(const long double& toCompare, const long double& source)
+  inline bool is_lte(const long double& toCompare, const long double& source)
   {
     return toCompare <= (source + MATH_TOL);
   }
 
-  inline const bool is_zero(const long double& value)
+  inline bool is_zero(const long double& value)
   {
     return std::abs(value) <= MATH_TOL_LD;
   }
 
-  inline const bool is_not_zero(const long double& value)
+  inline bool is_not_zero(const long double& value)
   {
     return !is_zero(value);
   }

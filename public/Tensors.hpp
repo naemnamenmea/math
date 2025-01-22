@@ -416,7 +416,7 @@ private:
 	{
 		return is0() || o_.is0() ? r_.Assign0(), false : true;
 	}
-	const real_t operator[](small_t i_) const
+	real_t operator[](small_t i_) const
 	{
 		return is0() ? 0. : m_pData->operator[](i_);
 	}
@@ -987,6 +987,12 @@ public:
 	//         real_t& operator()(small_t, small_t);
 	//   SymmetricTensor2s& operator=(const SymmetricTensor2s&);
 	//   SymmetricTensor2s& operator-=(const SymmetricTensor2s&);
+	SymmetricTensor2s& operator=(const SymmetricTensor2s& o_)
+	{
+		__Assign(o_.m_data);
+		return *this;
+	}
+
 	SymmetricTensor2s& operator+=(const SymmetricTensor2s& o_)
 	{
 		m_data[0] += o_.m_data[0];
@@ -1124,8 +1130,10 @@ private:
 public:
 	Tensor3s()
 		: m_data(),
-		  m_rows(){__SET_ROWS3} Tensor3s(tensor_kind_t, real_t v_ = 1.)
-		: m_rows(), m_data()
+		  m_rows(){__SET_ROWS3} 
+		  
+	Tensor3s(tensor_kind_t, real_t v_ = 1.)
+		: m_data(), m_rows()
 	{
 		__SET_ROWS3;
 		Assign1(v_);
@@ -2030,6 +2038,7 @@ inline Tensor2a& Tensor2a::operator+=(Tensor2CaptureDataAdapter o_)
 inline Tensor2a& Tensor2a::AddTransposed(Tensor2CaptureDataAdapter o_)
 {
 	if (!o_.m_ref.is0())
+	{
 		if (is0())
 		{
 			m_pData = o_.m_ref.m_pData;
@@ -2037,7 +2046,10 @@ inline Tensor2a& Tensor2a::AddTransposed(Tensor2CaptureDataAdapter o_)
 			m_pData->Transpose();
 		}
 		else
+		{
 			m_pData->AddTransposed(*o_.m_ref.m_pData);
+		}
+	}
 	return *this;
 }
 
@@ -2160,7 +2172,7 @@ inline Tensor2a& Tensor2a::Dot2Product(const Tensor4s& o_, Tensor2a& result_) co
 }
 
 inline Tensor4s& Tensor2a::DotProduct(const Tensor4s& o_, Tensor4s& result_) const
-{  //!!!!!!!!!!! может, лучше использовать DotMultiply?
+{  //!!!!!!!!!!! пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ DotMultiply?
 	if (__AdjustMult(o_, result_))
 		m_pData->DotProduct(o_, result_);
 	return result_;
@@ -2365,7 +2377,7 @@ inline Tensor4s& Tensor4s::TransformAll(const Tensor2s& tr_)
 	DotMultiply(tr_, 2, 1);
 	DotMultiply(tr_, 3, 1);
 	DotMultiply(tr_);  //<=>4,1
-	/* обратно (если tr_ - тензор поворота, т.е. tr_^T==tr_^-1):
+	/* пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅ tr_ - пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅ.пїЅ. tr_^T==tr_^-1):
 //
 	 * DotMultiply_left(tr_);//<=>right(1,2)
  DotMultiply(tr_,1,2);
@@ -2378,7 +2390,7 @@ inline Tensor4s& Tensor4s::TransformAll(const Tensor2s& tr_)
 }
 
 //==========================SymmetricTensor4s===================================
-//отображение индексов: 11->1, 22->2, 33->3, 12->4, 23->5, 13->6
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: 11->1, 22->2, 33->3, 12->4, 23->5, 13->6
 inline unsigned short int map1(unsigned short int i_)
 {
 	switch (i_)
@@ -2916,7 +2928,7 @@ inline real_t& SymmetricTensor4s::operator()(small_t i_, small_t j_)
 }
 
 inline real_t SymmetricTensor4s::operator()(small_t i_, small_t j_, small_t k_, small_t l_) const
-{  //отображение индексов: 11->1, 22->2, 33->3, 12->4, 23->5, 13->6
+{  //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: 11->1, 22->2, 33->3, 12->4, 23->5, 13->6
 #ifdef STRONGCHECK
 	Assert(
 		i_ > 0 && j_ > 0 && k_ > 0 && l_ > 0 && i_ <= 3 && j_ <= 3 && k_ <= 3 && l_ <= 3,
@@ -2928,7 +2940,7 @@ inline real_t SymmetricTensor4s::operator()(small_t i_, small_t j_, small_t k_, 
 }
 
 inline real_t SymmetricTensor4s::operator[](Tensor4::tIndex i_) const
-{  //отображение индексов: 00->1, 11->2, 22->3, 01->4, 12->5, 02->6
+{  //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: 00->1, 11->2, 22->3, 01->4, 12->5, 02->6
 #ifdef STRONGCHECK
 	Assert(
 		i_[1] >= 0 && i_[2] >= 0 && i_[3] >= 0 && i_[4] >= 0 && i_[1] < 3 && i_[2] < 3 &&

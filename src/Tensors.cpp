@@ -1,6 +1,6 @@
 
 #include "Tensors.hpp"
-#include "ThrowMessage.hpp"
+#include "KontrolException.hpp"
 
 using namespace std;
 

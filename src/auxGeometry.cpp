@@ -234,8 +234,8 @@ pair<point3d_, point3d_> auxGeometry::CrossedLinesPerpendicularQuick(const point
 
 bool auxGeometry::RectanglesIntersection(const point3d_& aP1, const point3d_& aP2, const point3d_& bP1, const point3d_& bP2)
 {
-  return (aP2.x() >= bP1.x() && bP2.x() >= aP1.x() || aP1.x() >= bP2.x() && bP1.x() >= aP2.x())
-    && (aP2.y() >= bP1.y() && bP1.y() >= aP1.y() || aP1.y() >= bP1.y() && bP1.y() >= aP2.y());
+  return ((aP2.x() >= bP1.x() && bP2.x() >= aP1.x()) || (aP1.x() >= bP2.x() && bP1.x() >= aP2.x()))
+    && ((aP2.y() >= bP1.y() && bP1.y() >= aP1.y()) || (aP1.y() >= bP1.y() && bP1.y() >= aP2.y()));
 }
 
 point3d_ auxGeometry::PlaneAndLineIntersectionPoint(const double A, const double B, const double C, const double D,
