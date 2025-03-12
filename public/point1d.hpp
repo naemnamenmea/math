@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <cmath>
 
 template <class T>
 class point1d
@@ -123,7 +124,15 @@ private:
 	T m_elems[1];
 };
 
-template class point1d<double>;
+template<typename T>
+struct std::hash<point1d<T>>
+{
+    size_t operator()(const point1d<T>& pnt) const noexcept
+    {
+        size_t h1 = hash<T>{}(pnt.x());
+        return h1;
+    }
+};
 
 template <class T>
 std::istream& operator>>(std::istream& is, point1d<T>& p)
@@ -138,3 +147,5 @@ std::ostream& operator<<(std::ostream& os, const point1d<T>& p)
 	os << p.x();
 	return os;
 }
+
+template class point1d<double>;

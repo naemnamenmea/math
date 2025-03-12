@@ -169,6 +169,18 @@ private:
 	T m_elems[3];
 };
 
+template<typename T>
+struct std::hash<point3d<T>>
+{
+    size_t operator()(const point3d<T>& pnt) const noexcept
+    {
+        size_t h1 = hash<T>{}(pnt.x());
+        size_t h2 = hash<T>{}(pnt.y());
+        size_t h3 = hash<T>{}(pnt.z());
+        return h1 ^ (h2 << 1) ^ (h3 << 2);
+    }
+};
+
 template <class T>
 std::istream& operator>>(std::istream& is, point3d<T>& p)
 {
